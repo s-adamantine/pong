@@ -6,25 +6,21 @@ var canvas; //the dimensions of our display area
 var canvasContext; //underlying graphical information in which you can draw rectangles and shit
 var centerX = centerY = 50;
 var paddleY = 250;
+var paddleHeight = 100;
 var leftScore = rightScore = 0;
 var offset = 15;
 var	vH = 8;
 var vY = 5;
 var fps = 50;
-var gameState = true;
+var gameState = 1;
 
 	window.onload = function() { 	//makes sure that the entire script is loaded
 		canvas = document.getElementById('gameCanvas');
 		canvasContext = canvas.getContext('2d');
 		keyPress();
-		setInterval(function() {
-			draw();
-			bounceBall();
-			drawBall(centerX, centerY);
-			scoring();
-			newRound();
-			pauseGame();
-		}, 1000/fps);
+		if (gameState = 1) {
+			game = setInterval(gameLoop, 1000/fps);
+		}
 	};
 
 	function scoring() {
@@ -35,15 +31,18 @@ var gameState = true;
 		}
 	}
 
+	function gameLoop() {
+		draw();
+		bounceBall();
+		drawBall(centerX, centerY);
+		scoring();
+		newRound();
+		pauseGame();
+	}
+
 	function pauseGame() {
-		var vHCopy = vH;
-		var vYCopy = vY; //doesn't work bc it redos it per fps
-		if (!gameState) {
-			vH = vY = 0;
-			break;
-		} else {
-			vH = vHCopy;
-			vY = vYCopy;
+		if (gameState == 0) {
+			clearInterval(game);
 		}
 	}
 
@@ -54,13 +53,19 @@ var gameState = true;
 	    	} else if(event.keyCode == 40) {
 		        movePaddle(20);
 		    } else if(event.keyCode == 32 ) {
-				gameState ? gameState = false : gameState = true;
+				gameState ? gameState = 0 : gameState = 1;
 			}
 		});
 	}
 
 	function movePaddle(vPaddle) {
-		paddleY += vPaddle;
+		if ((paddleY + paddleHeight + vPaddle) <= canvas.height && (paddleY + vPaddle) >= 0) {
+			paddleY += vPaddle;
+		} else if (paddleY + paddleHeight + vPaddle > canvas.height) {
+			paddleY = canvas.height - paddleHeight;
+		} else if (paddleY + vPaddle < 0) {
+			paddleY = 0;
+		}
 	}
 
 	function draw() {
@@ -76,8 +81,8 @@ var gameState = true;
 
 	function drawPaddles() {
 		canvasContext.fillStyle = 'white';
-		canvasContext.fillRect(offset, paddleY, 5, 100);
-		canvasContext.fillRect(canvas.width - offset, paddleY, 5, 100);
+		canvasContext.fillRect(offset, paddleY, 5, paddleHeight);
+		canvasContext.fillRect(canvas.width - offset, paddleY, 5, paddleHeight);
 	}
 
 	function drawNet() {
@@ -108,7 +113,7 @@ var gameState = true;
 	function bounceBall() {
 		centerX = centerX + vH;
 		centerY = centerY + vY;
-		//bounce back on paddle hit
+		//bounce back on hitting a paddle
 		if ((centerX > (canvas.width - offset) || centerX < (offset + 5)) &&
 		 	(centerY > paddleY && centerY < paddleY + 100)) {
 			vH = -vH;
