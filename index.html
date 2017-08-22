@@ -8,10 +8,10 @@ var centerX = centerY = 50;
 var paddleY = 250;
 var paddleHeight = 100;
 var leftScore = rightScore = 0;
-var offset = 16;
-var	vH = 2;
-var vY = 1;
-var fps = 250;
+var offset = 15;
+var	vH = 5;
+var vY = 2;
+var fps = 100;
 var gameState = 1;
 
 	window.onload = function() { 	//makes sure that the entire script is loaded
@@ -46,8 +46,8 @@ var gameState = 1;
 
 	function drawPaddles() {
 		canvasContext.fillStyle = 'white';
-		canvasContext.fillRect(offset, paddleY, 6, paddleHeight);
-		canvasContext.fillRect(canvas.width - offset, paddleY, 6, paddleHeight);
+		canvasContext.fillRect(offset, paddleY, 5, paddleHeight);
+		canvasContext.fillRect(canvas.width - offset, paddleY, 5, paddleHeight);
 	}
 
 	function drawNet() {
@@ -63,7 +63,7 @@ var gameState = 1;
 	function drawBall(centerX, centerY) {
 		canvasContext.beginPath();
 		canvasContext.fillStyle = 'white';
-		canvasContext.arc(centerX, centerY, 6, 0, Math.PI * 2, true);
+		canvasContext.arc(centerX, centerY, 5, 0, Math.PI * 2, true);
 		canvasContext.fill();
 	}
 
@@ -71,7 +71,7 @@ var gameState = 1;
 		centerX = centerX + vH;
 		centerY = centerY + vY;
 		//bounce back on hitting a paddle
-		if ((centerX == (canvas.width - offset) || centerX == (offset + 6)) &&
+		if ((centerX == (canvas.width - offset) || centerX == (offset + 5)) &&
 		 	(centerY > paddleY && centerY < paddleY + 100)) {
 			vH = -vH;
 		}
